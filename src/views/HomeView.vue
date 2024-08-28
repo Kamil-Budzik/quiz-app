@@ -1,9 +1,9 @@
 <script setup lang="ts">
-console.log('SIEMANO KORANO')
+import Hello from '../components/Hello.vue'
 </script>
 
 <template>
   <main>
-    SIEMANO KOLANO FORTPEIAN ELO
+    <Hello />
   </main>
 </template>
