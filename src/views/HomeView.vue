@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+console.log('SIEMANO KORANO')
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    SIEMANO KOLANO FORTPEIAN ELO
   </main>
 </template>
