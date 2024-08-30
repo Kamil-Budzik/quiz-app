@@ -1,5 +1,5 @@
-import { ref } from 'vue'
 import type { Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -22,7 +22,7 @@ interface ApiQuestion {
   difficulty: 'easy' | 'medium' | 'hard'
 }
 
-interface Question extends ApiQuestion {
+export interface Question extends ApiQuestion {
   correctAnswer: string
   incorrectAnswers: string[]
 }
@@ -32,30 +32,46 @@ interface ApiResponse {
   results: Question[]
 }
 
+export interface SelectedAnswer {
+  questionIndex: number
+  answer: string
+  isCorrect: boolean
+}
+
 export const useQuizStore = defineStore('quiz', () => {
   const router = useRouter()
 
   const gameStatus: Ref<GameStatus> = ref(GameStatus.NotStarted)
   const currentQuestionIndex = ref(0)
+  const currentQuestion = computed(() => questions.value[currentQuestionIndex.value])
   const questions = ref<Question[]>([])
   const loading = ref(false)
   const error: Ref<string | null> = ref(null)
   const score = ref(0)
+  const selectedAnswers = ref<SelectedAnswer[]>([])
 
-  const startQuiz = () => {
-    fetchQuestions()
+  const updateSelectedAnswers = (answer: SelectedAnswer) => {
+    selectedAnswers.value = [
+      ...selectedAnswers.value.filter((a) => a.questionIndex !== answer.questionIndex),
+      answer
+    ]
+    console.log(selectedAnswers.value)
+  }
+
+  const startQuiz = async () => {
+    await fetchQuestions()
 
     gameStatus.value = GameStatus.InProgress
     currentQuestionIndex.value = 0
     score.value = 0
 
-    router.push({ name: 'InProgressScreen' })
+    void router.push({ name: 'InProgressScreen' })
   }
 
   const completeQuiz = () => {
     gameStatus.value = GameStatus.Completed
 
-    router.push({ name: 'InProgressScreen' })
+    void router.push({ name: 'CompletedScreen' })
   }
 
   const reviewAnswers = () => {
@@ -63,19 +79,39 @@ export const useQuizStore = defineStore('quiz', () => {
   }
 
   const nextQuestion = () => {
-    if (currentQuestionIndex.value < questions.value.length - 1) {
-      currentQuestionIndex.value++
-    } else {
-      completeQuiz()
+    if (selectedAnswers.value.length === questions.value.length) {
+      return completeQuiz()
+    }
+
+    // Find the next unanswered question starting from the current index
+    let nextIndex = currentQuestionIndex.value + 1
+    while (nextIndex !== currentQuestionIndex.value) {
+      // Wrap around to the start if we reach the end
+      if (nextIndex >= questions.value.length) {
+        nextIndex = 0
+      }
+
+      // Check if the question at nextIndex has been answered
+      const isAnswered = selectedAnswers.value.some((answer) => answer.questionIndex === nextIndex)
+      if (!isAnswered) {
+        currentQuestionIndex.value = nextIndex
+        return
+      }
+
+      nextIndex++
+    }
+
+    // If we somehow exit the loop without finding an unanswered question, fallback to the first unanswered question
+    const firstUnansweredIndex = questions.value.findIndex(
+      (_, index) => !selectedAnswers.value.some((answer) => answer.questionIndex === index)
+    )
+
+    if (firstUnansweredIndex !== -1) {
+      currentQuestionIndex.value = firstUnansweredIndex
     }
   }
 
-  const answerQuestion = (isCorrect: boolean) => {
-    if (isCorrect) {
-      score.value++
-    }
-    nextQuestion()
-  }
+  const setCurrentQuestion = (index: number) => (currentQuestionIndex.value = index)
 
   // TODO: Think about creating a layer of abstraction for other requests
   const fetchQuestions = async () => {
@@ -84,13 +120,11 @@ export const useQuizStore = defineStore('quiz', () => {
 
     try {
       const res = await axios.get<ApiResponse>(API_URL)
-      const mappedQuestions = res.data.results.map((q: ApiQuestion) => ({
+      questions.value = res.data.results.map((q: ApiQuestion) => ({
         correctAnswer: q.correct_answer,
         incorrectAnswers: q.incorrect_answers,
         ...q
       }))
-      questions.value = mappedQuestions
-      console.log('questions', questions.value)
     } catch (err: unknown) {
       console.debug('Error in fetchQuestions', error)
       if (axios.isAxiosError(err)) {
@@ -108,14 +142,19 @@ export const useQuizStore = defineStore('quiz', () => {
 
   return {
     gameStatus,
+    currentQuestion,
     loading,
     currentQuestionIndex,
     questions,
     score,
+    error,
+    selectedAnswers,
+    updateSelectedAnswers,
     startQuiz,
     completeQuiz,
     reviewAnswers,
     nextQuestion,
-    answerQuestion
+    fetchQuestions,
+    setCurrentQuestion
   }
 })

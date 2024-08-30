@@ -2,10 +2,9 @@
 import { useQuizStore, GameStatus } from '@/stores/quiz'
 import ProgressSpinner from 'primevue/progressspinner'
 import QuizCard from '@/components/QuizCard.vue'
+import QuizPagination from '@/components/QuizPagination.vue'
 
 const quiz = useQuizStore()
-
-console.log(quiz.loading)
 </script>
 <template>
   <div>
@@ -18,11 +17,12 @@ console.log(quiz.loading)
       aria-label="Loading"
     />
 
-    <ul v-else>
-      <QuizCard
-        :question="quiz.questions[quiz.currentQuestionIndex]"
-        :question-number="quiz.currentQuestionIndex + 1"
-      />
-    </ul>
+    <section v-else>
+      <QuizPagination />
+
+      <QuizCard v-bind="quiz.currentQuestion" :question-number="quiz.currentQuestionIndex + 1" />
+    </section>
+
+    <ul></ul>
   </div>
 </template>
