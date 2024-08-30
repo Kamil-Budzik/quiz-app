@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 const API_URL = "https://opentdb.com/api.php?amount=10"
 
@@ -19,7 +20,6 @@ interface ApiQuestion {
   correct_answer: string
   incorrect_answers: string[]
   difficulty: "easy" | "medium" | "hard"
-
 }
 
 interface Question extends ApiQuestion {
@@ -33,6 +33,8 @@ interface ApiResponse {
 }
 
 export const useQuizStore = defineStore('quiz', () => {
+  const router = useRouter()
+
   const gameStatus: Ref<GameStatus> = ref(GameStatus.NotStarted)
   const currentQuestionIndex = ref(0)
   const questions = ref<Question[]>([])
@@ -46,10 +48,14 @@ export const useQuizStore = defineStore('quiz', () => {
     gameStatus.value = GameStatus.InProgress
     currentQuestionIndex.value = 0
     score.value = 0
+
+    router.push({ name: 'InProgressScreen' })
   }
 
   const completeQuiz = () => {
     gameStatus.value = GameStatus.Completed
+
+    router.push({ name: 'InProgressScreen' })
   }
 
   const reviewAnswers = () => {
@@ -103,6 +109,7 @@ export const useQuizStore = defineStore('quiz', () => {
 
   return {
     gameStatus,
+    loading,
     currentQuestionIndex,
     questions,
     score,
