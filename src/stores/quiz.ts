@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
-const API_URL = "https://opentdb.com/api.php?amount=10"
+const API_URL = 'https://opentdb.com/api.php?amount=10'
 
 export enum GameStatus {
   NotStarted,
@@ -15,11 +15,11 @@ export enum GameStatus {
 }
 
 interface ApiQuestion {
-  category: "string"
+  category: 'string'
   question: string
   correct_answer: string
   incorrect_answers: string[]
-  difficulty: "easy" | "medium" | "hard"
+  difficulty: 'easy' | 'medium' | 'hard'
 }
 
 interface Question extends ApiQuestion {
@@ -94,17 +94,16 @@ export const useQuizStore = defineStore('quiz', () => {
     } catch (err: unknown) {
       console.debug('Error in fetchQuestions', error)
       if (axios.isAxiosError(err)) {
-        error.value = err.response?.data.message || 'API Error';
+        error.value = err.response?.data.message || 'API Error'
       } else if (err instanceof Error) {
-        error.value = err.message;
+        error.value = err.message
       } else {
         // Fallback for unknown error types
-        error.value = 'An unknown error occurred';
+        error.value = 'An unknown error occurred'
       }
     } finally {
       loading.value = false
     }
-
   }
 
   return {

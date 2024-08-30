@@ -2,9 +2,9 @@ import axios from 'axios'
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export interface ApiResponse<T> {
-  data: T;
-  status: number;
-  statusText: string;
+  data: T
+  status: number
+  statusText: string
 }
 
 export async function fetchApi<T>(
@@ -12,11 +12,11 @@ export async function fetchApi<T>(
   config?: AxiosRequestConfig
 ): Promise<ApiResponse<T>> {
   try {
-    const response: AxiosResponse<T> = await axios.get<T>(url, config);
+    const response: AxiosResponse<T> = await axios.get<T>(url, config)
     return {
       data: response.data,
       status: response.status,
-      statusText: response.statusText,
+      statusText: response.statusText
     }
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {

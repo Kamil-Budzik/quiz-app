@@ -1,5 +1,3 @@
 <template>
-  <div>
-    completed screen 
-  </div>
+  <div>completed screen</div>
 </template>

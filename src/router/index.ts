@@ -9,7 +9,7 @@ const router = createRouter({
   routes: [
     { path: '/in-progress', name: 'InProgressScreen', component: InProgressScreen },
     { path: '/completed', name: 'CompletedScreen', component: CompletedScreen },
-    { path: '/', name: 'StartScreen', component: StartScreen },
+    { path: '/', name: 'StartScreen', component: StartScreen }
   ]
 })
 
