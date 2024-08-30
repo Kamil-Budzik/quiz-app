@@ -45,7 +45,7 @@ const getButtonClasses = (index: number) => {
 <template>
   <div class="relative w-full overflow-hidden py-2 flex items-center justify-center">
     <div
-      class="flex space-x-2 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth px-8 w-11/12"
+      class="flex space-x-2 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth px-8 w-11/12 justify-center"
       ref="scrollContainer"
     >
       <button

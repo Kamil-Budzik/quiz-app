@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
-const API_URL = 'https://opentdb.com/api.php?amount=10'
+const API_URL = 'https://opentdb.com/api.php?amount=3'
 
 export enum GameStatus {
   NotStarted,
@@ -47,7 +47,6 @@ export const useQuizStore = defineStore('quiz', () => {
   const questions = ref<Question[]>([])
   const loading = ref(false)
   const error: Ref<string | null> = ref(null)
-  const score = ref(0)
   const selectedAnswers = ref<SelectedAnswer[]>([])
 
   const updateSelectedAnswers = (answer: SelectedAnswer) => {
@@ -62,7 +61,6 @@ export const useQuizStore = defineStore('quiz', () => {
 
     gameStatus.value = GameStatus.InProgress
     currentQuestionIndex.value = 0
-    score.value = 0
 
     void router.push({ name: 'InProgressScreen' })
   }
@@ -79,6 +77,7 @@ export const useQuizStore = defineStore('quiz', () => {
 
   const nextQuestion = () => {
     if (selectedAnswers.value.length === questions.value.length) {
+      gameStatus.value = GameStatus.GameOver
       return completeQuiz()
     }
 
@@ -139,13 +138,21 @@ export const useQuizStore = defineStore('quiz', () => {
     }
   }
 
+  const restartQuiz = () => {
+    gameStatus.value = GameStatus.NotStarted
+    currentQuestionIndex.value = 0
+    questions.value = []
+    loading.value = false
+    error.value = null
+    selectedAnswers.value = []
+  }
+
   return {
     gameStatus,
     currentQuestion,
     loading,
     currentQuestionIndex,
     questions,
-    score,
     error,
     selectedAnswers,
     updateSelectedAnswers,
@@ -154,6 +161,7 @@ export const useQuizStore = defineStore('quiz', () => {
     reviewAnswers,
     nextQuestion,
     fetchQuestions,
-    setCurrentQuestion
+    setCurrentQuestion,
+    restartQuiz
   }
 })
