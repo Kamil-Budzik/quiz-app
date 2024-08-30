@@ -55,7 +55,6 @@ export const useQuizStore = defineStore('quiz', () => {
       ...selectedAnswers.value.filter((a) => a.questionIndex !== answer.questionIndex),
       answer
     ]
-    console.log(selectedAnswers.value)
   }
 
   const startQuiz = async () => {

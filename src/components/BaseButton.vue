@@ -10,7 +10,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const baseClasses =
-  'font-semibold rounded-full transition duration-200 ease-in-out focus:outline-none'
+  'font-semibold rounded-full transition duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed'
 
 const variantClasses = computed(() => {
   return props.variant === 'secondary'

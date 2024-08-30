@@ -15,6 +15,7 @@ const props = defineProps<Props>()
 const quiz = useQuizStore()
 const selectedAnswer = ref<string | null>(null)
 const allOptions = computed(() => shuffleArray([...props.incorrectAnswers, props.correctAnswer]))
+const isLastQuestion = computed(() => quiz.selectedAnswers.length === quiz.questions.length)
 
 const handleOptionClick = (option: string) => {
   selectedAnswer.value = option
@@ -27,8 +28,7 @@ const handleOptionClick = (option: string) => {
 }
 
 const buttonText = computed(() => {
-  console.log('selected answer', selectedAnswer.value)
-  if (quiz.selectedAnswers.length === quiz.questions.length) {
+  if (quiz.selectedAnswers.length === quiz.questions.length || isLastQuestion.value) {
     return 'Finish'
   }
   if (selectedAnswer.value) {
@@ -63,7 +63,13 @@ onUpdated(() => {
         />
       </li>
     </ul>
-    <BaseButton @click="quiz.nextQuestion()" variant="primary" size="medium" class="w-full mt-4">
+    <BaseButton
+      @click="quiz.nextQuestion()"
+      variant="primary"
+      size="medium"
+      class="w-full mt-4"
+      :disabled="isLastQuestion && !selectedAnswer"
+    >
       {{ buttonText }}
     </BaseButton>
   </div>
