@@ -3,6 +3,7 @@ import { useQuizStore, GameStatus } from '@/stores/quiz'
 import ProgressSpinner from 'primevue/progressspinner'
 import QuizCard from '@/components/QuizCard.vue'
 import QuizPagination from '@/components/QuizPagination.vue'
+import BaseProgressBar from '@/components/BaseProgressBar.vue'
 
 const quiz = useQuizStore()
 </script>
@@ -18,6 +19,10 @@ const quiz = useQuizStore()
     />
 
     <section v-else>
+      <BaseProgressBar
+        :total-questions="quiz.questions.length"
+        :answered-questions="quiz.selectedAnswers.length"
+      />
       <QuizPagination />
 
       <QuizCard v-bind="quiz.currentQuestion" :question-number="quiz.currentQuestionIndex + 1" />
