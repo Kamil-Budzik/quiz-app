@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onUpdated, ref } from 'vue'
 import { shuffleArray } from '@/helpers/shuffleArray'
-import { type Difficulty, useQuizStore } from '@/stores/quiz'
+import { useQuizStore } from '@/stores/quiz'
+import { type Difficulty } from '@/stores/quiz.types'
 
 interface Props {
   questionIndex: number

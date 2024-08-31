@@ -13,8 +13,8 @@ import {
   CategoryScale,
   LinearScale
 } from 'chart.js'
-import { computed, ref } from 'vue'
-import { type Difficulty, type SelectedAnswer } from '@/stores/quiz'
+import { computed } from 'vue'
+import { type Difficulty, type SelectedAnswer } from '@/stores/quiz.types'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
