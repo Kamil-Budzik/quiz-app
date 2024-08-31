@@ -29,7 +29,7 @@ const handleRestart = () => {
         {{ hasAnsweredAnyQuestions ? 'Quiz Completed!' : 'No Answers Recorded' }}
       </h1>
 
-      <template v-if="hasAnsweredAnyQuestions">
+      <div v-if="hasAnsweredAnyQuestions" class="pb-4">
         <p class="text-lg mb-4">
           You answered <span class="font-bold">{{ correctAnswersCount }}</span> out of
           <span class="font-bold">{{ totalQuestions }}</span> questions correctly.
@@ -37,8 +37,10 @@ const handleRestart = () => {
         <p class="text-lg mb-8">
           Your score: <span class="text-teal-600 font-bold">{{ correctPercentage }}%</span>
         </p>
-        <QuizChart :selected-answers="quiz.selectedAnswers" />
-      </template>
+        <div class="mb-8">
+          <QuizChart :selected-answers="quiz.selectedAnswers" />
+        </div>
+      </div>
 
       <template v-else>
         <p class="text-lg mb-8 text-gray-500">
@@ -47,7 +49,7 @@ const handleRestart = () => {
       </template>
 
       <button
-        class="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition duration-200"
+        class="bg-teal-500 text-white py-2 px-4 rounded-lg w-full hover:bg-teal-600 transition duration-200"
         @click="handleRestart"
       >
         Try again

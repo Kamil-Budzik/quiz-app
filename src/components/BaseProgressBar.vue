@@ -12,7 +12,7 @@ const progressPercentage = computed(() => {
 })
 </script>
 <template>
-  <div class="relative w-full h-2 bg-gray-300 rounded-full mb-6">
+  <div class="relative w-full max-w-xl h-2 bg-gray-300 rounded-full mb-6 shadow-sm">
     <div
       class="absolute top-0 left-0 h-full bg-teal-500 rounded-full transition-all duration-300"
       :style="{ width: `${progressPercentage}%` }"

@@ -14,8 +14,8 @@ const baseClasses =
 
 const variantClasses = computed(() => {
   return props.variant === 'secondary'
-    ? 'bg-secondary text-white hover:bg-opacity-90'
-    : 'bg-primary text-white hover:bg-primary-dark'
+    ? 'bg-gray-600 text-white hover:bg-gray-700' // Secondary button style with gray colors
+    : 'bg-teal-600 text-white hover:bg-teal-700' // Primary button style with teal colors
 })
 
 const sizeClasses = computed(() => {
@@ -30,8 +30,9 @@ const sizeClasses = computed(() => {
   }
 })
 </script>
+
 <template>
-  <button :class="[baseClasses, variantClasses, sizeClasses]" :type="type">
+  <button :class="[baseClasses, variantClasses, sizeClasses]" :type="props.type || 'button'">
     <slot />
   </button>
 </template>

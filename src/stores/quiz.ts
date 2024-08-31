@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
-const API_URL = 'https://opentdb.com/api.php?amount=10'
+const API_URL = 'https://opentdb.com/api.php?amount=12'
 
 export enum GameStatus {
   NotStarted,
