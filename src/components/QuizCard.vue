@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, onUpdated, ref } from 'vue'
 import { shuffleArray } from '@/helpers/shuffleArray'
-import { useQuizStore } from '@/stores/quiz'
+import { type Difficulty, useQuizStore } from '@/stores/quiz'
 
 interface Props {
-  questionNumber: number
+  questionIndex: number
   question: string
   correctAnswer: string
   incorrectAnswers: string[]
+  difficulty: Difficulty
 }
 
 const props = defineProps<Props>()
@@ -23,7 +24,8 @@ const handleOptionClick = (option: string) => {
   quiz.updateSelectedAnswers({
     answer: option,
     isCorrect: option === props.correctAnswer,
-    questionIndex: props.questionNumber - 1
+    questionIndex: props.questionIndex,
+    difficulty: props.difficulty
   })
 }
 
@@ -39,7 +41,7 @@ const buttonText = computed(() => {
 
 onUpdated(() => {
   const preselectedAnswer = quiz.selectedAnswers.find(
-    (answer) => answer.questionIndex === props.questionNumber - 1
+    (answer) => answer.questionIndex === props.questionIndex
   )
 
   if (preselectedAnswer) {
@@ -52,7 +54,7 @@ onUpdated(() => {
 
 <template>
   <div class="p-6 max-w-xl mx-auto my-4">
-    <p class="text-lg font-bold text-primary mb-2">Question {{ questionNumber }}</p>
+    <p class="text-lg font-bold text-primary mb-2">Question {{ questionIndex + 1 }}</p>
     <header v-html="question" class="text-xl font-semibold mb-4 text-text"></header>
     <ul class="space-y-2 mb-6">
       <li v-for="option in allOptions" :key="option" @click="handleOptionClick(option)">

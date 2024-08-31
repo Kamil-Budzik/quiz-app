@@ -25,7 +25,7 @@ const quiz = useQuizStore()
       />
       <QuizPagination />
 
-      <QuizCard v-bind="quiz.currentQuestion" :question-number="quiz.currentQuestionIndex + 1" />
+      <QuizCard v-bind="quiz.currentQuestion" :question-index="quiz.currentQuestionIndex" />
     </section>
 
     <ul></ul>

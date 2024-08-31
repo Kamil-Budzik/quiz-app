@@ -2,10 +2,12 @@
 import { computed } from 'vue'
 import { useQuizStore } from '@/stores/quiz'
 import { useRouter } from 'vue-router'
+import QuizChart from '@/components/QuizChart.vue'
 
 const quiz = useQuizStore()
 const router = useRouter()
 
+const hasAnsweredAnyQuestions = computed(() => quiz.selectedAnswers.length)
 const correctAnswersCount = computed(() => {
   return quiz.selectedAnswers.filter((answer) => answer.isCorrect).length
 })
@@ -13,7 +15,6 @@ const totalQuestions = computed(() => quiz.questions.length)
 const correctPercentage = computed(() => {
   return Math.round((correctAnswersCount.value / totalQuestions.value) * 100)
 })
-const hasAnsweredAnyQuestions = computed(() => quiz.selectedAnswers.length)
 
 const handleRestart = () => {
   quiz.restartQuiz()
@@ -36,6 +37,7 @@ const handleRestart = () => {
         <p class="text-lg mb-8">
           Your score: <span class="text-teal-600 font-bold">{{ correctPercentage }}%</span>
         </p>
+        <QuizChart :selected-answers="quiz.selectedAnswers" />
       </template>
 
       <template v-else>

@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
-const API_URL = 'https://opentdb.com/api.php?amount=3'
+const API_URL = 'https://opentdb.com/api.php?amount=10'
 
 export enum GameStatus {
   NotStarted,
@@ -14,12 +14,14 @@ export enum GameStatus {
   GameOver
 }
 
+export type Difficulty = 'easy' | 'medium' | 'hard'
+
 interface ApiQuestion {
   category: 'string'
   question: string
   correct_answer: string
   incorrect_answers: string[]
-  difficulty: 'easy' | 'medium' | 'hard'
+  difficulty: Difficulty
 }
 
 export interface Question extends ApiQuestion {
@@ -36,6 +38,7 @@ export interface SelectedAnswer {
   questionIndex: number
   answer: string
   isCorrect: boolean
+  difficulty: Difficulty
 }
 
 export const useQuizStore = defineStore('quiz', () => {
