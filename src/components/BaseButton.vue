@@ -15,7 +15,7 @@ const baseClasses =
 const variantClasses = computed(() => {
   return props.variant === 'secondary'
     ? 'bg-secondary text-white hover:bg-opacity-90'
-    : 'bg-primary text-white hover:bg-secondary'
+    : 'bg-primary text-white hover:bg-primary-dark'
 })
 
 const sizeClasses = computed(() => {
