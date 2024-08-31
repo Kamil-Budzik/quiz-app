@@ -1,10 +1,9 @@
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
-
-const API_URL = 'https://opentdb.com/api.php?amount=12'
+import { fetchApi } from '@/helpers/fetchApi'
+import type { ApiQuestion, ApiResponse, Question, SelectedAnswer } from '@/stores/quiz.types'
 
 export enum GameStatus {
   NotStarted,
@@ -12,33 +11,6 @@ export enum GameStatus {
   Completed,
   Reviewing,
   GameOver
-}
-
-export type Difficulty = 'easy' | 'medium' | 'hard'
-
-interface ApiQuestion {
-  category: 'string'
-  question: string
-  correct_answer: string
-  incorrect_answers: string[]
-  difficulty: Difficulty
-}
-
-export interface Question extends ApiQuestion {
-  correctAnswer: string
-  incorrectAnswers: string[]
-}
-
-interface ApiResponse {
-  response_code: number
-  results: Question[]
-}
-
-export interface SelectedAnswer {
-  questionIndex: number
-  answer: string
-  isCorrect: boolean
-  difficulty: Difficulty
 }
 
 export const useQuizStore = defineStore('quiz', () => {
@@ -51,6 +23,9 @@ export const useQuizStore = defineStore('quiz', () => {
   const loading = ref(false)
   const error: Ref<string | null> = ref(null)
   const selectedAnswers = ref<SelectedAnswer[]>([])
+  // fetch config
+  const amountToFetch = ref(10)
+  const difficulty = ref('all')
 
   const updateSelectedAnswers = (answer: SelectedAnswer) => {
     selectedAnswers.value = [
@@ -92,7 +67,6 @@ export const useQuizStore = defineStore('quiz', () => {
         nextIndex = 0
       }
 
-      // Check if the question at nextIndex has been answered
       const isAnswered = selectedAnswers.value.some((answer) => answer.questionIndex === nextIndex)
       if (!isAnswered) {
         currentQuestionIndex.value = nextIndex
@@ -102,40 +76,36 @@ export const useQuizStore = defineStore('quiz', () => {
       nextIndex++
     }
 
-    // If we somehow exit the loop without finding an unanswered question, fallback to the first unanswered question
     const firstUnansweredIndex = questions.value.findIndex(
       (_, index) => !selectedAnswers.value.some((answer) => answer.questionIndex === index)
     )
 
     if (firstUnansweredIndex !== -1) {
+      console.error('No unanswered questions found, falling back to the first unanswered question')
       currentQuestionIndex.value = firstUnansweredIndex
     }
   }
 
   const setCurrentQuestion = (index: number) => (currentQuestionIndex.value = index)
 
-  // TODO: Think about creating a layer of abstraction for other requests
   const fetchQuestions = async () => {
     loading.value = true
     error.value = null
 
     try {
-      const res = await axios.get<ApiResponse>(API_URL)
+      const res = await fetchApi<ApiResponse>({
+        params: {
+          amount: amountToFetch.value,
+          difficulty: difficulty.value === 'all' ? undefined : difficulty.value
+        }
+      })
       questions.value = res.data.results.map((q: ApiQuestion) => ({
         correctAnswer: q.correct_answer,
         incorrectAnswers: q.incorrect_answers,
         ...q
       }))
     } catch (err: unknown) {
-      console.debug('Error in fetchQuestions', error)
-      if (axios.isAxiosError(err)) {
-        error.value = err.response?.data.message || 'API Error'
-      } else if (err instanceof Error) {
-        error.value = err.message
-      } else {
-        // Fallback for unknown error types
-        error.value = 'An unknown error occurred'
-      }
+      error.value = (err as Error).message
     } finally {
       loading.value = false
     }
@@ -152,12 +122,14 @@ export const useQuizStore = defineStore('quiz', () => {
 
   return {
     gameStatus,
+    amountToFetch,
     currentQuestion,
     loading,
     currentQuestionIndex,
     questions,
     error,
     selectedAnswers,
+    difficulty,
     updateSelectedAnswers,
     startQuiz,
     completeQuiz,

@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import DropdownSelect from '@/components/BaseDropdown.vue'
 import { useQuizStore } from '@/stores/quiz'
 
 const quiz = useQuizStore()
-const selectedTopic = ref('')
+const selectedDifficulty = ref('all')
 const selectedNumberOfQuestions = ref(10)
 
-// TODO: fetch from API
-const topicOptions = [
-  { value: 'science', label: 'Science' },
-  { value: 'history', label: 'History' }
+const difficultyOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'easy', label: 'Easy' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'hard', label: 'Hard' }
 ]
 
 const questionOptions = [
@@ -21,12 +22,24 @@ const questionOptions = [
 ]
 
 const startQuiz = () => {
-  if (selectedTopic.value && selectedNumberOfQuestions.value) {
+  if (selectedDifficulty.value || selectedNumberOfQuestions.value) {
     quiz.startQuiz()
   } else {
-    alert('Please select a topic and the number of questions.')
+    alert('Please select difficulty and the number of questions.')
   }
 }
+
+watch(selectedNumberOfQuestions, (value) => {
+  quiz.amountToFetch = value
+})
+
+watch(selectedDifficulty, (value) => {
+  quiz.difficulty = value
+})
+
+onMounted(() => {
+  quiz.restartQuiz()
+})
 </script>
 
 <template>
@@ -41,8 +54,8 @@ const startQuiz = () => {
       <DropdownSelect
         id="topic-select"
         label="Select a topic"
-        v-model="selectedTopic"
-        :options="topicOptions"
+        v-model="selectedDifficulty"
+        :options="difficultyOptions"
         class="mb-4"
       />
       <DropdownSelect
