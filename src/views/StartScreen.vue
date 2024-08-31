@@ -52,8 +52,8 @@ onMounted(() => {
         Get ready to test your knowledge across various topics.
       </p>
       <DropdownSelect
-        id="topic-select"
-        label="Select a topic"
+        id="difficulty-select"
+        label="Select a difficulty"
         v-model="selectedDifficulty"
         :options="difficultyOptions"
         class="mb-4"
