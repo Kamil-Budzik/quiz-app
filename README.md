@@ -2,6 +2,10 @@
 
 This is a Vue.js-based Quiz Application that allows users to select the difficulty of the questions and fetches trivia questions accordingly. The application is fully responsive and uses Tailwind CSS for styling.
 
+## Live Demo
+
+Check out the live demo of the application [here](https://quiz-app-kamil.netlify.app/)
+
 ## Features
 
 - **Dynamic Question Fetching**: Fetches questions based on the selected difficulty (`easy`, `medium`, `hard`).
@@ -35,10 +39,10 @@ npm run dev
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Run Tests with [Vitest](https://vitest.dev/)
 
 ```sh
-npm run test:unit
+npm run test
 ```
 
 ### Lint with [ESLint](https://eslint.org/)

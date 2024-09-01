@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useQuizStore } from '@/stores/quiz'
-import ProgressSpinner from 'primevue/progressspinner'
 import QuizCard from '@/components/QuizCard.vue'
 import QuizPagination from '@/components/QuizPagination.vue'
 import BaseProgressBar from '@/components/BaseProgressBar.vue'
@@ -10,15 +9,9 @@ const quiz = useQuizStore()
 
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    <ProgressSpinner
-      v-if="quiz.loading"
-      class="my-10"
-      style="width: 50px; height: 50px"
-      strokeWidth="8"
-      fill="var(--surface-ground)"
-      animationDuration=".5s"
-      aria-label="Loading"
-    />
+    <div v-if="quiz.loading" class="flex justify-center items-center h-full">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500"></div>
+    </div>
 
     <section
       v-else
