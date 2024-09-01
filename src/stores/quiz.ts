@@ -22,8 +22,9 @@ export const useQuizStore = defineStore('quiz', () => {
   const questions = ref<Question[]>([])
   const loading = ref(false)
   const error: Ref<string | null> = ref(null)
+
   const selectedAnswers = ref<SelectedAnswer[]>([])
-  // fetch config
+
   const amountToFetch = ref(10)
   const difficulty = ref('all')
 
@@ -41,16 +42,6 @@ export const useQuizStore = defineStore('quiz', () => {
     currentQuestionIndex.value = 0
 
     void router.push({ name: 'InProgressScreen' })
-  }
-
-  const completeQuiz = () => {
-    gameStatus.value = GameStatus.Completed
-
-    void router.push({ name: 'CompletedScreen' })
-  }
-
-  const reviewAnswers = () => {
-    gameStatus.value = GameStatus.Reviewing
   }
 
   const nextQuestion = () => {
@@ -109,6 +100,16 @@ export const useQuizStore = defineStore('quiz', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  const reviewAnswers = () => {
+    gameStatus.value = GameStatus.Reviewing
+  }
+
+  const completeQuiz = () => {
+    gameStatus.value = GameStatus.Completed
+
+    void router.push({ name: 'CompletedScreen' })
   }
 
   const restartQuiz = () => {
